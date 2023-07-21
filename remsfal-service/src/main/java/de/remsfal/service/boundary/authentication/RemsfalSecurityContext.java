@@ -19,6 +19,7 @@ public class RemsfalSecurityContext implements SecurityContext {
     }
 
     public static RemsfalSecurityContext extendSecurityContext(final SecurityContext context, final RemsfalPrincipal principal) {
+        System.out.println("Remsfalprincipal" + principal.getName());
         return new RemsfalSecurityContext(context, principal);
     }
     

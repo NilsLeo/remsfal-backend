@@ -45,6 +45,7 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext)
         throws IOException {
+        System.out.println("filter" + requestContext.getHeaderString("Authorization"));
         try {
             final String authorizationHeader = requestContext.getHeaderString("Authorization");
             if (authorizationHeader == null) {
