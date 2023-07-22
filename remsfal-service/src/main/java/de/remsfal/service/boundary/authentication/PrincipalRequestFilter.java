@@ -46,6 +46,11 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext)
         throws IOException {
         System.out.println("filter" + requestContext.getHeaderString("Authorization"));
+        if (requestContext.getUriInfo().getPath().equals("/api/v1/authenticate")){
+            System.out.println("auth");
+        }
+        else {
+
         try {
             final String authorizationHeader = requestContext.getHeaderString("Authorization");
             if (authorizationHeader == null) {
@@ -80,6 +85,7 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
             logger.error("User not found in database");
             throw new NotAuthorizedException("Bearer");
         }
+    }
     }
 
 }

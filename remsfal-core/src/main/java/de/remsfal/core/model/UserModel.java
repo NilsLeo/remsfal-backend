@@ -10,5 +10,7 @@ public interface UserModel {
     String getName();
 
     String getEmail();
+
+    String getTokenId();
     
 }

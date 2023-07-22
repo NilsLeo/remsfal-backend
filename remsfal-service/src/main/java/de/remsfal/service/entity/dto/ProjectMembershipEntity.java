@@ -89,7 +89,12 @@ public class ProjectMembershipEntity extends AbstractEntity implements ProjectMe
     public String getEmail() {
         return user.getEmail();
     }
-    
+
+    @Override
+    public String getTokenId() {
+        return user.getTokenId();
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();

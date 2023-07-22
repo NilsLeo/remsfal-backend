@@ -52,12 +52,16 @@ public class TokenSecuredResource {
     @Path("roles-allowed-admin")
     @RolesAllowed("Admin")
     @Produces(MediaType.TEXT_PLAIN)
-    public String helloRolesAllowedAdmin(@Context SecurityContext ctx) {
+    public String helloRolesAllowedAdmin(@Context SecurityContext ctx)
+
+    {
+
+        System.out.println("jwt"+ jwt.getName());
         return "adminresource";
     }
     @GET
     @Path("roles-allowed-tester")
-    @RolesAllowed("Tester")
+    @RolesAllowed("TestRole")
     @Produces(MediaType.TEXT_PLAIN)
     public String helloRolesAllowedTester(@Context SecurityContext ctx) {
         return "testerresource";

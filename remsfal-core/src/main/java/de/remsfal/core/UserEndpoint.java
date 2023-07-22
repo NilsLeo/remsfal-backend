@@ -1,9 +1,13 @@
 package de.remsfal.core;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -33,20 +37,24 @@ public interface UserEndpoint {
         @Parameter(description = "User information", required = true) @Valid UserJson user);
 
     @GET
+    @Path("roles-allowed-tester")
+    @RolesAllowed("TestRole")
+    @Produces(MediaType.TEXT_PLAIN)
+    String restrictedToTester(@Context SecurityContext ctx);
+
+    @GET
+    @Path("permit-all")
+    @PermitAll
+    @Produces(MediaType.TEXT_PLAIN)
+    String accessibleToEveryone(@Context SecurityContext ctx);
+
+    @GET
     @Path("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieve information of a user.")
     @APIResponse(responseCode = "404", description = "The user does not exist")
     UserJson getUser(
         @Parameter(description = "ID of the user", required = true) @PathParam("userId") String userId);
-    @GET
-    @Path("/authenticate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Retrieve information of a user.")
-    @APIResponse(responseCode = "404", description = "The user does not exist")
-    Response authenticate(
-            @Parameter(description = "Bearer token for user authentication", required = true)
-            @HeaderParam("Authorization") String bearerToken);
     @PATCH
     @Path("/{userId}")
     @Consumes(MediaType.APPLICATION_JSON)

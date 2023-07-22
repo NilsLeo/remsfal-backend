@@ -24,6 +24,11 @@ public class TokenInfo implements UserModel {
     }
 
     @Override
+    public String getTokenId() {
+        return user.getTokenId();
+    }
+
+    @Override
     public String getName() {
         return user.getName();
     }

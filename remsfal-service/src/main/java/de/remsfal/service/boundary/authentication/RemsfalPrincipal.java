@@ -29,6 +29,11 @@ public class RemsfalPrincipal implements Principal, UserModel {
     }
 
     @Override
+    public String getTokenId() {
+        return user.getTokenId();
+    }
+
+    @Override
     public String getName() {
         return user.getName();
     }

@@ -26,6 +26,7 @@ public class TokenValidator {
                 String name = jwt.getClaim("name").asString();
                 final UserModel user = ImmutableUserJson.builder()
                         .id(userId)
+                        .tokenId(userId)
                         .email(email)
                         .name(name)
                         .build();

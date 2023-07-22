@@ -2,23 +2,17 @@ package de.remsfal.service.boundary;
 
 import java.net.URI;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import de.remsfal.core.UserEndpoint;
 import de.remsfal.core.dto.UserJson;
 import de.remsfal.core.model.CustomerModel;
 import de.remsfal.service.boundary.authentication.RemsfalPrincipal;
 import de.remsfal.service.control.UserController;
-import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
@@ -36,14 +30,25 @@ public class UserResource implements UserEndpoint {
     UserController controller;
 
     @Inject
-    JwtService service;
-
+    JsonWebToken jwt;
     @Override
     public Response createUser(final UserJson user) {
         // TODO: validate user
         final CustomerModel userModel = controller.createUser(principal);
         final URI location = uri.getAbsolutePathBuilder().path(userModel.getId()).build();
         return Response.created(location).build();
+    }
+
+    @Override
+    public String restrictedToTester(@Context SecurityContext ctx) {
+        System.out.println("testjwt " + jwt.getGroups());
+
+        return "testerresource";
+    }
+
+    @Override
+    public String accessibleToEveryone(SecurityContext ctx) {
+        return "everyonesreource";
     }
 
     @Override
@@ -56,28 +61,6 @@ public class UserResource implements UserEndpoint {
         }
     }
 
-    @Override
-    public Response authenticate(final String bearerToken) {
-        System.out.println("testauth");
-        String token = bearerToken.replace("Bearer ", "");
-        DecodedJWT jwt = JWT.decode(token);
-        String issuer = String.valueOf(jwt.getClaim("iss"));
-        System.out.println("issuer" + issuer);
-        if(issuer.equals("accounts.google.com")){
-
-            try {
-                String userId = jwt.getSubject();
-                final CustomerModel user = controller.getUserByTokenId(userId);
-                System.out.println("email" + user.getEmail());
-                String remsfalJwt = service.generateJWT(user);
-                return Response.ok(remsfalJwt).build();
-            } catch (IllegalArgumentException e) {
-                throw new BadRequestException("Invalid user id", e);
-            }
-        } else {
-            return Response.status(Response.Status.FORBIDDEN).entity("You have already been logged In").build();
-        }
-    }
 
 
     @Override
