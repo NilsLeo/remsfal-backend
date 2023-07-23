@@ -27,14 +27,16 @@ public interface UserEndpoint {
     final static String SERVICE = "users";
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
     @Operation(summary = "Create a new user.")
     @APIResponse(responseCode = "201", description = "User created successfully",
         headers = @Header(name = "Location", description = "URL to retrive all orders"))
     @APIResponse(responseCode = "400", description = "Invalid request message")
     @APIResponse(responseCode = "409", description = "Another user with the same email already exist")
-    Response createUser(
-        @Parameter(description = "User information", required = true) @Valid UserJson user);
+    UserJson createUser(@Context SecurityContext ctx,
+                        String body);
 
     @GET
     @Path("roles-allowed-tester")

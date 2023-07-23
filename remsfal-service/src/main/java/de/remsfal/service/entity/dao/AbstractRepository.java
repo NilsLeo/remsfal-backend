@@ -11,6 +11,8 @@ abstract class AbstractRepository<Entity extends AbstractEntity> implements Pana
     protected static final String PARAM_USER_ID = "userId";
     protected static final String PARAM_PROJECT_ID = "projectId";
 
+    protected static final String PARAM_REFRESH_TOKEN= "refreshToken";
+
     public Entity merge(final Entity entity) {
         return getEntityManager().merge(entity);
     }

@@ -1,6 +1,7 @@
 package de.remsfal.service.boundary;
 
 import java.net.URI;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -8,9 +9,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import de.remsfal.core.UserEndpoint;
+import de.remsfal.core.dto.ImmutableUserJson;
 import de.remsfal.core.dto.UserJson;
 import de.remsfal.core.model.CustomerModel;
+import de.remsfal.core.model.UserModel;
 import de.remsfal.service.boundary.authentication.RemsfalPrincipal;
+import de.remsfal.service.control.AuthenticationController;
 import de.remsfal.service.control.UserController;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -28,16 +32,25 @@ public class UserResource implements UserEndpoint {
     
     @Inject
     UserController controller;
-
+    @Inject
+    AuthenticationController authController;
     @Inject
     JsonWebToken jwt;
+
     @Override
-    public Response createUser(final UserJson user) {
-        // TODO: validate user
-        final CustomerModel userModel = controller.createUser(principal);
-        final URI location = uri.getAbsolutePathBuilder().path(userModel.getId()).build();
-        return Response.created(location).build();
+    public UserJson createUser(SecurityContext ctx, String body) {
+
+        String email = authController.getTokenEmail(body);
+
+        String tokenUserId = authController.getTokenSubject(body);
+        final UserModel userRequest =
+                ImmutableUserJson.builder().name("Nils Leo").email(email).tokenId(tokenUserId).build();
+
+        CustomerModel user = controller.createUser(userRequest);
+        return UserJson.valueOf(user);
+
     }
+
 
     @Override
     public String restrictedToTester(@Context SecurityContext ctx) {

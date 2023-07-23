@@ -21,6 +21,12 @@ public interface AuthenticationEndpoint {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     Response authenticate(@Context SecurityContext ctx,
-                          @HeaderParam("Authorization") String authHeader,
                           String body);
+    @POST
+    @Path("/token")
+    Response refresh(@Context SecurityContext ctx,
+                     String body);
+
+    String getRefreshToken(String refreshToken);
+
 }

@@ -1,4 +1,5 @@
 package de.remsfal.service.boundary.authentication;
+
 import de.remsfal.core.dto.ImmutableUserJson;
 import de.remsfal.core.model.CustomerModel;
 import de.remsfal.core.model.UserModel;
@@ -18,6 +19,12 @@ public class TokenValidator {
 
         String issuer = jwt.getIssuer();
 
+        // Check if the token is expired
+        Date expiresAt = jwt.getExpiresAt();
+        if (expiresAt.before(new Date())) {
+            return null; // Token is expired
+        }
+
         if(issuer.equals("remsfal-jwt") ){
 
             try {
@@ -36,7 +43,7 @@ public class TokenValidator {
                 throw new BadRequestException("Invalid user id", e);
             }
 
-    }
+        }
         else return null;
 
     }

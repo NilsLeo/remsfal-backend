@@ -52,6 +52,7 @@ public abstract class UserJson implements CustomerModel {
     public static UserJson valueOf(final CustomerModel model) {
         return ImmutableUserJson.builder()
             .id(model.getId())
+                .tokenId(model.getTokenId())
             .name(model.getName())
             .email(model.getEmail())
             .registeredDate(model.getRegisteredDate())

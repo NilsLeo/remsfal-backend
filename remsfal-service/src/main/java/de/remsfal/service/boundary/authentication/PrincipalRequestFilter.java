@@ -46,7 +46,7 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext)
         throws IOException {
         System.out.println("filter" + requestContext.getHeaderString("Authorization"));
-        if (requestContext.getUriInfo().getPath().equals("/api/v1/authenticate")){
+        if (requestContext.getUriInfo().getPath().equals("/api/v1/authenticate") || requestContext.getUriInfo().getPath().equals("/api/v1/users")){
             System.out.println("auth");
         }
         else {

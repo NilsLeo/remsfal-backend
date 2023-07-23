@@ -32,10 +32,10 @@ public class UserController {
 
     @Transactional
     public CustomerModel createUser(final UserModel tokenInfo) {
-        logger.infov("Creating a new user (name={0}, email={1})", tokenInfo.getName(), tokenInfo.getEmail());
+        logger.infov("Creating a new user (name={0}, email={1}, tokenId={2})", tokenInfo.getName(), tokenInfo.getEmail(), tokenInfo.getTokenId());
         final UserEntity entity = new UserEntity();
         entity.generateId();
-        entity.setTokenId(tokenInfo.getId());
+        entity.setTokenId(tokenInfo.getTokenId());
         entity.setName(tokenInfo.getName());
         entity.setEmail(tokenInfo.getEmail().toLowerCase());
         try {
