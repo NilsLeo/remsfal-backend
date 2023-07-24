@@ -1,10 +1,8 @@
 package de.remsfal.service.boundary;
 
-import java.net.URI;
-import java.util.Map;
-
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -38,18 +36,44 @@ public class UserResource implements UserEndpoint {
     JsonWebToken jwt;
 
     @Override
-    public UserJson createUser(SecurityContext ctx, String body) {
+    public Response authenticate(SecurityContext ctx, String body) {
+        try {
+            String email = authController.getTokenEmail(body);
+            String tokenUserId = authController.getTokenSubject(body);
 
-        String email = authController.getTokenEmail(body);
+            // if user exists, log him in
+            if(controller.checkIfUserExists(tokenUserId)){
+                String accessToken = authController.generateAccessToken(body);
+                String refreshToken = authController.generateRefreshToken(accessToken);
 
-        String tokenUserId = authController.getTokenSubject(body);
-        final UserModel userRequest =
-                ImmutableUserJson.builder().name("Nils Leo").email(email).tokenId(tokenUserId).build();
+                JsonObject tokensJson = Json.createObjectBuilder()
+                        .add("accessToken", accessToken)
+                        .add("refreshToken", refreshToken)
+                        .build();
 
-        CustomerModel user = controller.createUser(userRequest);
-        return UserJson.valueOf(user);
+                return Response.ok(tokensJson.toString(), MediaType.APPLICATION_JSON).build();
+            }
+            // else create user
+            else {
+                final UserModel userRequest =
+                        ImmutableUserJson.builder().name("Nils Leo").email(email).tokenId(tokenUserId).build();
 
+                CustomerModel user = controller.createUser(userRequest);
+
+                return Response.status(Response.Status.CREATED)
+                        .entity(user)
+                        .build();
+            }
+        } catch (Exception e) {
+            System.err.println("Authorization error: " + e.getMessage());
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Authorization error: " + e.getMessage())
+                    .build();
+        }
     }
+
+
 
 
     @Override

@@ -10,6 +10,8 @@ import de.remsfal.service.entity.dto.ProjectEntity;
 import de.remsfal.service.entity.dto.RefreshTokenEntity;
 import de.remsfal.service.entity.dto.UserEntity;
 import io.smallrye.jwt.build.Jwt;
+import io.quarkus.smallrye.jwt.runtime.auth.JwtAuthMechanism;
+
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,9 +23,20 @@ import javax.ws.rs.NotFoundException;
 
 import java.time.Instant;
 import java.util.*;
-
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import java.security.interfaces.RSAPublicKey;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 @ApplicationScoped
 public class AuthenticationController {
+
+    @Inject
+    JwtAuthMechanism jwtAuthMechanism;
     @Inject
     RefreshTokenRepository refreshTokenRepository;
     @Inject
@@ -63,6 +76,9 @@ public class AuthenticationController {
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getSubject();
     }
+    public boolean verifyRefreshToken(String refreshToken) {
+
+    }
 
     public String getTokenEmail(String token) {
         DecodedJWT jwt = JWT.decode(token);
@@ -95,7 +111,16 @@ public class AuthenticationController {
         createRefreshToken(refreshToken);
         return refreshToken;
     }
-
+    public boolean checkIfRefreshTokenExists(final String refreshToken) {
+        try {
+            logger.infov("Checking if refreshToken exists ( refreshToken = {0})",  refreshToken);
+            final RefreshTokenModel refreshTokenModel = refreshTokenRepository.refreshTokenByToken(refreshToken);
+            return refreshTokenModel != null;
+        } catch (Exception e) {
+            logger.errorv("An error occurred while checking if refreshToken (refreshToken = {0}): {1}", refreshToken, e.getMessage());
+            return false;
+        }
+    }
     public RefreshTokenModel getRefreshToken(final String refreshToken) {
         logger.infov("Retrieving a refreshToken (id = {0})", refreshToken);
         try {
@@ -113,8 +138,8 @@ public class AuthenticationController {
 
         RefreshTokenEntity entity = new RefreshTokenEntity();
         entity.generateId();
+        System.out.println("refreshToken " + refreshToken);
         entity.setToken(refreshToken);
-        entity.setExpiryDate(Date.from(expiryInstant));
         refreshTokenRepository.persistAndFlush(entity);
         return entity;
     }

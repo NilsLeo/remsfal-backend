@@ -35,7 +35,7 @@ public interface UserEndpoint {
         headers = @Header(name = "Location", description = "URL to retrive all orders"))
     @APIResponse(responseCode = "400", description = "Invalid request message")
     @APIResponse(responseCode = "409", description = "Another user with the same email already exist")
-    UserJson createUser(@Context SecurityContext ctx,
+    Response authenticate(@Context SecurityContext ctx,
                         String body);
 
     @GET

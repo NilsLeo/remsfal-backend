@@ -54,6 +54,19 @@ public class UserController {
         }
         return user;
     }
+
+    public boolean checkIfUserExists(final String tokenUserId) {
+        try {
+            logger.infov("Checking if user exists (tokenId = {0})", tokenUserId);
+            final UserEntity user = repository.findByTokenId(tokenUserId);
+            return user != null;
+        } catch (Exception e) {
+            logger.errorv("An error occurred while checking if user exists (tokenId = {0}): {1}", tokenUserId, e.getMessage());
+            return false;
+        }
+    }
+
+
     public CustomerModel getUserByTokenId(final String tokenUserId) {
         logger.infov("Retrieving an existing user (tokenId = {0})", tokenUserId);
         final UserEntity user = repository.findByTokenId(tokenUserId);

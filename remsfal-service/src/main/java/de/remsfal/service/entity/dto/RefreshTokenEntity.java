@@ -15,33 +15,18 @@ public class RefreshTokenEntity  extends AbstractEntity implements RefreshTokenM
     @Column(name = "ID", columnDefinition = "char", nullable = false, length = 36)
     private String id;
 
-    @Column(name = "TOKEN")
+    @Column(name = "TOKEN", columnDefinition = "mediumtext")
     private String token;
-
-    @Column(name = "USER_ID", columnDefinition = "char")
-    private String userId;
-
-    @Column(name = "EXPIRY_DATE")
-    private Date expiryDate;
 
     @Override
     public String getId() {
         return id;
     }
 
-    @Override
-    public String getUserId() {
-        return userId;
-    }
 
     @Override
     public String getToken() {
         return token;
-    }
-
-    @Override
-    public Date getExpiryDate() {
-        return expiryDate;
     }
 
     @Override
@@ -54,13 +39,4 @@ public class RefreshTokenEntity  extends AbstractEntity implements RefreshTokenM
         this.token = token;
     }
 
-    // missing setter for userId
-    @Override
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 }
