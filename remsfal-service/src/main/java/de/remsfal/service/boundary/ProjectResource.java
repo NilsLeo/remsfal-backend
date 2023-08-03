@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
  */
+@Path(ProjectEndpoint.CONTEXT + "/" + ProjectEndpoint.VERSION + "/" + ProjectEndpoint.SERVICE)
 public class ProjectResource implements ProjectEndpoint {
 
     @Context

@@ -26,8 +26,7 @@ public interface UserEndpoint {
     @Path("/authenticate")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieve information of a user.")
-    UserJson authenticate(
-            @Parameter(in = ParameterIn.HEADER, description = "Authorization header", required = true) @HeaderParam("Authorization") String authHeader);
+    UserJson authenticate();
 
 
     @PATCH

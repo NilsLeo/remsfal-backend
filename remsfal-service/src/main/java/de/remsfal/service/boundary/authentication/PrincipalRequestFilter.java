@@ -68,12 +68,7 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
             }
             logger.error("reached1" + token.getEmail());
 
-            String remsfalJwt = authController.generateJWT(token);
-            logger.error("reached2" + remsfalJwt);
-
-            requestContext.getHeaders().remove("Authorization");
-            requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, remsfalJwt);
-
+           authController.generateJWT(token);
             logger.info("method:" + requestContext.getMethod());
             logger.info("header:" + requestContext.getHeaderString("Authorization"));
 

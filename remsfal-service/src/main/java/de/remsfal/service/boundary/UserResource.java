@@ -42,9 +42,8 @@ public class UserResource implements UserEndpoint {
     AuthController authController;
 
     @Override
-    public UserJson authenticate(String authHeader) {
-        System.out.println("autHeader2 " + authHeader);
-        DecodedJWT jwt =  authController.getDecodedJWT(authHeader);
+    public UserJson authenticate() {
+        DecodedJWT jwt =  authController.getDecodedJWT(authController.getJwt());
         try {
             CustomerModel user = controller.getUser(jwt.getSubject());
             return UserJson.valueOf(user);
@@ -74,7 +73,9 @@ public class UserResource implements UserEndpoint {
 
     @Override
     public void deleteUser(final String userId) {
-        if (!controller.deleteUser(userId)) {
+        System.out.println("userId " + userId);
+        CustomerModel user = controller.getUserByTokenId(userId);
+        if (!controller.deleteUser(user.getId())) {
             throw new NotFoundException();
         }
     }
