@@ -39,7 +39,7 @@ public interface PropertyEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieve information of a property.")
     @APIResponse(responseCode = "404", description = "The property does not exist")
-    PropertyJson getProperty(
+    Response getProperty(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
         @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId);
 

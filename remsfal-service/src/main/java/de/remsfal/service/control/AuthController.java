@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import de.remsfal.core.dto.ImmutableUserJson;
 import de.remsfal.core.dto.UserJson;
 import de.remsfal.core.model.CustomerModel;
+import de.remsfal.core.model.ProjectMemberModel;
 import de.remsfal.core.model.UserModel;
 import de.remsfal.service.boundary.authentication.TokenInfo;
 import de.remsfal.service.boundary.authentication.TokenStore;
@@ -117,7 +118,25 @@ public class AuthController {
         return tokenStore.getJwt();
     }
 
-
+    public boolean isOneOfGivenRolesInProject(String projectId, ProjectMemberModel.UserRole[] authorizedUserRoles, String token) {
+        DecodedJWT jwt = getDecodedJWT(token);
+        if (jwt != null) {
+            for (ProjectMemberModel.UserRole userRole : authorizedUserRoles) {
+                String claimString = userRole.toString().toLowerCase() + "Projects";
+                System.out.println("claim " + claimString);
+                Claim claim = jwt.getClaim(claimString);
+                if (claim != null) {
+                    Gson gson = new Gson();
+                    ArrayList<String> projectsForRole = gson.fromJson(claim.asString(), ArrayList.class);
+                    if (projectsForRole.contains(projectId)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
+    }
     public boolean isAdminForProject(String projectId, String token){
         DecodedJWT jwt = getDecodedJWT(token);
         if(jwt != null){

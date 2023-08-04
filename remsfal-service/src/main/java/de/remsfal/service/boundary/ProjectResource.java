@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import de.remsfal.core.model.ProjectMemberModel;
 import de.remsfal.service.control.AuthController;
 import org.jboss.logging.Logger;
 
@@ -47,7 +48,7 @@ public class ProjectResource implements ProjectEndpoint {
     AuthController authController;
 
     @Override
-    public ProjectListJson getProjects() {
+    public Response getProjects() {
         List<ProjectModel> projects = controller.getProjects(principal);
         if(projects.isEmpty()) {
             throw new NotFoundException("No projects for this user fond");
@@ -70,10 +71,11 @@ public class ProjectResource implements ProjectEndpoint {
 
     @Override
     public Response getProject(final String projectId) {
-        boolean isAdmin = authController.isAdminForProject(projectId, authController.getJwt());
-        System.out.println("isAdmin "+ isAdmin );
+        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{ProjectMemberModel.UserRole.PROPRIETOR}, authController.getJwt());
 
-        if(!isAdmin) {
+        System.out.println("isAdmin "+ isAuthorized );
+
+        if(!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("You don't have admin rights to access this project.")
                     .build();
@@ -91,7 +93,9 @@ public class ProjectResource implements ProjectEndpoint {
 
 
     @Override
-    public ProjectJson updateProject(final String projectId, @Valid final ProjectJson project) {
+    public Response updateProject(final String projectId, @Valid final ProjectJson project) {
+        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{ProjectMemberModel.UserRole.PROPRIETOR}, authController.getJwt());
+        if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
@@ -100,7 +104,7 @@ public class ProjectResource implements ProjectEndpoint {
     }
 
     @Override
-    public void deleteProject(final String projectId) {
+    public Response deleteProject(final String projectId) {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
@@ -117,7 +121,7 @@ public class ProjectResource implements ProjectEndpoint {
     }
 
     @Override
-    public ProjectMemberListJson getProjectMembers(final String projectId) {
+    public Response getProjectMembers(final String projectId) {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
@@ -126,7 +130,7 @@ public class ProjectResource implements ProjectEndpoint {
     }
 
     @Override
-    public ProjectJson updateProjectMember(final String projectId, final String memberId, final ProjectJson project) {
+    public Response updateProjectMember(final String projectId, final String memberId, final ProjectJson project) {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
@@ -135,7 +139,7 @@ public class ProjectResource implements ProjectEndpoint {
     }
 
     @Override
-    public void deleteProjectMember(final String projectId, final String memberId) {
+    public Response deleteProjectMember(final String projectId, final String memberId) {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }

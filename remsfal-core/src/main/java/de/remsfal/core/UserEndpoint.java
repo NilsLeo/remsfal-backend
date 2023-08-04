@@ -35,7 +35,7 @@ public interface UserEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update information of a user.")
     @APIResponse(responseCode = "404", description = "The user does not exist")
-    UserJson updateUser(
+    Response updateUser(
             @Parameter(description = "ID of the user", required = true) @PathParam("userId") String userId,
             @Parameter(description = "User information", required = true) @Valid UserJson user);
 
@@ -44,7 +44,7 @@ public interface UserEndpoint {
     @Operation(summary = "Delete an existing user.")
     @APIResponse(responseCode = "204", description = "The user was deleted successfully")
     @APIResponse(responseCode = "404", description = "The user does not exist")
-    void deleteUser(
+    Response deleteUser(
             @Parameter(description = "ID of the user", required = true) @PathParam("userId") String userId);
 
 }

@@ -40,7 +40,7 @@ public interface BuildingEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieve information of a building.")
     @APIResponse(responseCode = "404", description = "The building does not exist")
-    BuildingJson getBuilding(
+    Response getBuilding(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
         @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
         @Parameter(description = "ID of the building", required = true) @PathParam("buildingId") String buildingId);

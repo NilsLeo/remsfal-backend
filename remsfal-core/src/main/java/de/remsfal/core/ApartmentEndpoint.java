@@ -41,7 +41,7 @@ public interface ApartmentEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Retrieve information of a apartment.")
     @APIResponse(responseCode = "404", description = "The apartment does not exist")
-    ApartmentJson getApartment(
+    Response getApartment(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
         @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
         @Parameter(description = "ID of the building", required = true) @PathParam("buildingId") String buildingId,

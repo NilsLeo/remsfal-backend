@@ -5,7 +5,9 @@ import de.remsfal.core.BuildingEndpoint;
 import de.remsfal.core.ProjectEndpoint;
 import de.remsfal.core.PropertyEndpoint;
 import de.remsfal.core.dto.ApartmentJson;
+import de.remsfal.service.control.AuthController;
 
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
@@ -14,13 +16,15 @@ import javax.ws.rs.core.Response;
         + "/{propertyId}/" + BuildingEndpoint.SERVICE
         + "/{buildingId}/" + ApartmentEndpoint.SERVICE)
 public class ApartmentResource implements ApartmentEndpoint {
+    @Inject
+    AuthController authController;
     @Override
     public Response createApartment(ApartmentJson apartment) {
         return null;
     }
 
     @Override
-    public ApartmentJson getApartment(String projectId, String propertyId, String buildingId, String apartmentId) {
+    public Response getApartment(String projectId, String propertyId, String buildingId, String apartmentId) {
         return null;
     }
 }
