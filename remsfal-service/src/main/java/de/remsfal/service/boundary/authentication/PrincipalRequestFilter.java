@@ -67,8 +67,8 @@ public class PrincipalRequestFilter implements ContainerRequestFilter {
                 throw new NotAuthorizedException("Bearer");
             }
             logger.error("reached1" + token.getEmail());
-
-           authController.generateJWT(token);
+            logger.info("internaltToken:" + authController.generateJWT(token));
+           ;
             logger.info("method:" + requestContext.getMethod());
             logger.info("header:" + requestContext.getHeaderString("Authorization"));
 
