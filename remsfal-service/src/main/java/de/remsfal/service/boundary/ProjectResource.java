@@ -71,7 +71,7 @@ public class ProjectResource implements ProjectEndpoint {
 
     @Override
     public Response getProject(final String projectId) {
-        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{ProjectMemberModel.UserRole.PROPRIETOR}, authController.getJwt());
+        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{ProjectMemberModel.UserRole.PROPRIETOR, ProjectMemberModel.UserRole.MANAGER}, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null) {
             return Response.status(Response.Status.BAD_REQUEST)
