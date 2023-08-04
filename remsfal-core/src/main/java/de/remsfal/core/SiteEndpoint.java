@@ -31,9 +31,12 @@ public interface SiteEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new site.")
     @APIResponse(responseCode = "201", description = "Site created successfully",
-        headers = @Header(name = "Location", description = "URL of the new site"))
+            headers = @Header(name = "Location", description = "URL of the new site"))
     Response createSite(
-        @Parameter(description = "Site information", required = true) @Valid SiteJson site);
+            @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
+            @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
+            @Parameter(description = "Site information", required = true) @Valid SiteJson site);
+
 
     @GET
     @Path("/{siteId}")

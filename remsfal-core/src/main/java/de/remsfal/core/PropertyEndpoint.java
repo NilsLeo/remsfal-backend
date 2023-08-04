@@ -30,9 +30,11 @@ public interface PropertyEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new property.")
     @APIResponse(responseCode = "201", description = "Property created successfully",
-        headers = @Header(name = "Location", description = "URL of the new property"))
+            headers = @Header(name = "Location", description = "URL of the new property"))
     Response createProperty(
-        @Parameter(description = "Property information", required = true) @Valid PropertyJson property);
+            @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
+            @Parameter(description = "Property information", required = true) @Valid PropertyJson property);
+
 
     @GET
     @Path("/{propertyId}")

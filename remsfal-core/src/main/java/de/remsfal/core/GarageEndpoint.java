@@ -32,9 +32,13 @@ public interface GarageEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new garage.")
     @APIResponse(responseCode = "201", description = "Garage created successfully",
-        headers = @Header(name = "Location", description = "URL of the new garage"))
+            headers = @Header(name = "Location", description = "URL of the new garage"))
     Response createGarage(
-        @Parameter(description = "Garage information", required = true) @Valid GarageJson garage);
+            @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
+            @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
+            @Parameter(description = "ID of the building", required = true) @PathParam("buildingId") String buildingId,
+            @Parameter(description = "Garage information", required = true) @Valid GarageJson garage);
+
 
     @GET
     @Path("/{garageId}")

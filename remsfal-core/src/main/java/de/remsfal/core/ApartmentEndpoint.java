@@ -32,9 +32,10 @@ public interface ApartmentEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new apartment.")
     @APIResponse(responseCode = "201", description = "Apartment created successfully",
-        headers = @Header(name = "Location", description = "URL of the new apartment"))
+            headers = @Header(name = "Location", description = "URL of the new apartment"))
     Response createApartment(
-        @Parameter(description = "Apartment information", required = true) @Valid ApartmentJson apartment);
+            @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
+            @Parameter(description = "Apartment information", required = true) @Valid ApartmentJson apartment);
 
     @GET
     @Path("/{apartmentId}")

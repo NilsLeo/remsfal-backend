@@ -42,7 +42,7 @@ public class UserResource implements UserEndpoint {
     AuthController authController;
 
     @Override
-    public Response authenticate() {
+    public UserJson authenticate() {
         DecodedJWT jwt =  authController.getDecodedJWT(authController.getJwt());
         try {
             CustomerModel user = controller.getUser(jwt.getSubject());
