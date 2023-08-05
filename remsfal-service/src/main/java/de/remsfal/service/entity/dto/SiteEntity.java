@@ -1,15 +1,14 @@
 package de.remsfal.service.entity.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import de.remsfal.core.model.SiteModel;
 
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
  */
+@NamedQuery(name = "SiteEntity.findByPropertyId",
+        query = "SELECT m FROM SiteEntity m WHERE m.propertyId = :propertyId")
 @Entity
 @Table(name = "SITE")
 public class SiteEntity extends AbstractEntity implements SiteModel {
@@ -17,10 +16,12 @@ public class SiteEntity extends AbstractEntity implements SiteModel {
     @Id
     @Column(name = "ID", columnDefinition = "char", nullable = false, length = 36)
     private String id;
-    
+    @Column(name = "PROPERTY_ID", columnDefinition = "char", length = 36)
+    private String propertyId;
+
     @Column(name = "TITLE")
     private String title;
-    
+
     @Override
     public String getId() {
         return id;
@@ -29,6 +30,10 @@ public class SiteEntity extends AbstractEntity implements SiteModel {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setPropertyId(String propertyId) {
+        this.propertyId = propertyId;
     }
 
     @Override
@@ -42,8 +47,7 @@ public class SiteEntity extends AbstractEntity implements SiteModel {
 
     @Override
     public String getPropertyId() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.propertyId;
     }
 
 }

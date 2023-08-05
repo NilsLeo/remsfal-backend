@@ -1,15 +1,14 @@
 package de.remsfal.service.entity.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import de.remsfal.core.model.GarageModel;
 
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
  */
+@NamedQuery(name = "GarageEntity.findByBuildingId",
+        query = "SELECT m FROM GarageEntity m WHERE m.buildingId = :buildingId")
 @Entity
 @Table(name = "GARAGE")
 public class GarageEntity extends AbstractEntity implements GarageModel {
@@ -20,7 +19,13 @@ public class GarageEntity extends AbstractEntity implements GarageModel {
     
     @Column(name = "TITLE")
     private String title;
-    
+    @Column(name = "BUILDING_ID", columnDefinition = "char", length = 36)
+    private String buildingId;
+
+    public void setBuildingId(String buildingId) {
+        this.buildingId = buildingId;
+    }
+
     @Override
     public String getId() {
         return id;
@@ -42,8 +47,6 @@ public class GarageEntity extends AbstractEntity implements GarageModel {
 
     @Override
     public String getBuildingId() {
-        // TODO Auto-generated method stub
-        return null;
+        return buildingId;
     }
-
 }

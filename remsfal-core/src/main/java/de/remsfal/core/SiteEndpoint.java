@@ -37,15 +37,9 @@ public interface SiteEndpoint {
             @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
             @Parameter(description = "Site information", required = true) @Valid SiteJson site);
 
-
     @GET
-    @Path("/{siteId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Retrieve information of a site.")
-    @APIResponse(responseCode = "404", description = "The site does not exist")
-    Response getSite(
-        @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
-        @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
-        @Parameter(description = "ID of the building", required = true) @PathParam("siteId") String siteId);
+    @Operation(summary = "Retrieve information of all sites.")
+    Response getSites(@Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId, @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId);
 
 }

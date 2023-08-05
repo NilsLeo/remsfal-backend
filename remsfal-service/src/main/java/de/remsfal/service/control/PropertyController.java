@@ -4,19 +4,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import de.remsfal.core.model.*;
+import de.remsfal.service.entity.dao.*;
+import de.remsfal.service.entity.dto.PropertyEntity;
+import de.remsfal.service.entity.dto.UserEntity;
 import org.jboss.logging.Logger;
 
-import de.remsfal.core.model.ApartmentModel;
-import de.remsfal.core.model.BuildingModel;
-import de.remsfal.core.model.GarageModel;
-import de.remsfal.core.model.PropertyModel;
-import de.remsfal.core.model.SiteModel;
-import de.remsfal.core.model.UserModel;
-import de.remsfal.service.entity.dao.ApartmentRepository;
-import de.remsfal.service.entity.dao.BuildingRepository;
-import de.remsfal.service.entity.dao.GarageRepository;
-import de.remsfal.service.entity.dao.PropertyRepository;
-import de.remsfal.service.entity.dao.SiteRepository;
+import java.util.List;
 
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
@@ -35,21 +29,30 @@ public class PropertyController {
     
     @Inject
     BuildingRepository buildingRepository;
-    
+    @Inject
+    UserRepository userRepository;
+
     @Inject
     ApartmentRepository apartmentRepository;
     
     @Inject
     GarageRepository garageRepository;
-    
-    
-    @Transactional
-    public PropertyModel createProperty(final UserModel user, final PropertyModel property) {
-        return null;
-    }
 
-    public PropertyModel getProperty(final UserModel user, final String propertyId) {
-        return null;
+    @Transactional
+    public PropertyModel createProperty(String projectId, final UserModel user, String title) {
+        logger.infov("Creating a property (title={0}, email={1}, projectId={2})", title, user.getEmail(), projectId);
+        UserEntity userEntity = userRepository.findById(user.getId());
+
+        PropertyEntity entity = new PropertyEntity();
+        entity.generateId();
+        entity.setTitle(title);
+        entity.setProjectId(projectId);
+        propertyRepository.persistAndFlush(entity);
+        return entity;
+    }
+    public List<PropertyEntity> getProperties(String projectId) {
+        List<PropertyEntity> propertyEntities = propertyRepository.findPropertiesByProjectId(projectId);
+        return propertyEntities;
     }
 
     @Transactional

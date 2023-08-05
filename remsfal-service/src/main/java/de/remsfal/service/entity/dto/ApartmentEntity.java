@@ -1,15 +1,14 @@
 package de.remsfal.service.entity.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import de.remsfal.core.model.ApartmentModel;
 
 /**
  * @author Alexander Stanik [alexander.stanik@htw-berlin.de]
  */
+@NamedQuery(name = "ApartmentEntity.findByBuildingId",
+        query = "SELECT m FROM ApartmentEntity m WHERE m.buildingId = :buildingId")
 @Entity
 @Table(name = "APARTMENT")
 public class ApartmentEntity extends AbstractEntity implements ApartmentModel {
@@ -20,7 +19,8 @@ public class ApartmentEntity extends AbstractEntity implements ApartmentModel {
     
     @Column(name = "TITLE")
     private String title;
-    
+    @Column(name = "BUILDING_ID", columnDefinition = "char", length = 36)
+    private String buildingId;
     @Override
     public String getId() {
         return id;
@@ -29,6 +29,10 @@ public class ApartmentEntity extends AbstractEntity implements ApartmentModel {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setBuildingId(String buildingId) {
+        this.buildingId = buildingId;
     }
 
     @Override

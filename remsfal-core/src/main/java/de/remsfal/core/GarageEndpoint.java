@@ -39,16 +39,11 @@ public interface GarageEndpoint {
             @Parameter(description = "ID of the building", required = true) @PathParam("buildingId") String buildingId,
             @Parameter(description = "Garage information", required = true) @Valid GarageJson garage);
 
-
     @GET
-    @Path("/{garageId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Retrieve information of a garage.")
-    @APIResponse(responseCode = "404", description = "The garage does not exist")
-    Response getGarage(
-        @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
-        @Parameter(description = "ID of the property", required = true) @PathParam("propertyId") String propertyId,
-        @Parameter(description = "ID of the building", required = true) @PathParam("buildingId") String buildingId,
-        @Parameter(description = "ID of the garage", required = true) @PathParam("garageId") String garageId);
+    @Operation(summary = "Retrieve information of all Garages.")
+    Response getGarages(@Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId, @Parameter(description = "ID of the Building", required = true) @PathParam("buildingId") String buildingId);
 
 }
+
+
