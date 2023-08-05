@@ -2,6 +2,7 @@ package de.remsfal.service.boundary;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -12,15 +13,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import de.remsfal.core.dto.*;
 import de.remsfal.core.model.ProjectMemberModel;
+import de.remsfal.core.model.UserModel;
 import de.remsfal.service.control.AuthController;
+import de.remsfal.service.control.UserController;
+import de.remsfal.service.entity.dto.ProjectMembershipEntity;
 import org.jboss.logging.Logger;
 
 import de.remsfal.core.ProjectEndpoint;
-import de.remsfal.core.dto.ProjectJson;
-import de.remsfal.core.dto.ProjectListJson;
-import de.remsfal.core.dto.ProjectMemberJson;
-import de.remsfal.core.dto.ProjectMemberListJson;
 import de.remsfal.core.model.ProjectModel;
 import de.remsfal.service.boundary.authentication.RemsfalPrincipal;
 import de.remsfal.service.control.ProjectController;
@@ -46,7 +47,8 @@ public class ProjectResource implements ProjectEndpoint {
 
     @Inject
     AuthController authController;
-
+    @Inject
+    UserController userController;
     @Override
     public Response getProjects() {
         List<ProjectModel> projects = controller.getProjects(principal);
@@ -125,8 +127,16 @@ public class ProjectResource implements ProjectEndpoint {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            UserModel user = userController.getUserByEmail(member.getEmail());
+            ProjectModel project = controller.addProjectMember(user, projectId, member);
+            return Response.ok(ProjectJson.valueOf(project)).build();
+        }
+catch (Exception e){
+    return Response.status(Response.Status.BAD_REQUEST)
+            .entity("Bad Request")
+            .build();
+}
     }
 
     @Override
@@ -140,8 +150,11 @@ public class ProjectResource implements ProjectEndpoint {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
-        // TODO Auto-generated method stub
-        return null;
+        Set<? extends ProjectMemberModel> members =  controller.getProjectMembers(principal, projectId);
+        if(members.isEmpty()) {
+            throw new NotFoundException("No members for this project fond");
+        }
+        return Response.ok(ProjectMemberListJson.valueOf(members)).build();
     }
 
     @Override
@@ -168,6 +181,9 @@ public class ProjectResource implements ProjectEndpoint {
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
+        UserModel user = userController.getUser(memberId);
+
+        // controller.removeProjectMember()
         // TODO Auto-generated method stub
         return Response.status(Response.Status.NO_CONTENT).build();  // successfully deleted
 

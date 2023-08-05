@@ -62,6 +62,15 @@ public class UserController {
         }
         return user;
     }
+
+    public CustomerModel getUserByEmail(final String email) {
+        logger.infov("Retrieving an existing user (email = {0})", email);
+        final UserEntity user = repository.findByEmail(email);
+        if(user == null) {
+            throw new NotFoundException("User not exist");
+        }
+        return user;
+    }
     @Transactional
     public CustomerModel updateUser(final UserModel user) {
         logger.infov("Updating an existing user ({0})", user);

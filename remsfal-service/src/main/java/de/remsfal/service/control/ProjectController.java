@@ -105,8 +105,11 @@ public class ProjectController {
     @Transactional
     public ProjectModel addProjectMember(final UserModel user, final String projectId, final ProjectMemberModel member) {
         logger.infov("Adding a project membership (user={0}, project={1}, member={2})", user.getId(), projectId, member.getEmail());
+
         try {
-            final ProjectEntity projectEntity = projectRepository.findProjectByUserId(user.getId(), projectId);
+
+            final ProjectEntity projectEntity = projectRepository.findById(projectId);
+
             UserEntity userEntity;
             if(member.getId() != null) {
                 userEntity = userRepository.findById(member.getId());
@@ -121,12 +124,14 @@ public class ProjectController {
                     notificationController.informUserAboutRegistration(userEntity);
                 }
             } else {
+
                 throw new BadRequestException("Project member's email is missing");
             }
             projectEntity.addMember(userEntity, member.getRole());
             notificationController.informUserAboutProjectMembership(userEntity);
             return projectRepository.mergeAndFlush(projectEntity);
         } catch (final NoResultException e) {
+
             throw new NotFoundException("Project not exist or user has no membership", e);
         }
     }
