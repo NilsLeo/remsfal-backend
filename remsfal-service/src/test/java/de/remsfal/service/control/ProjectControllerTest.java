@@ -372,10 +372,10 @@ class ProjectControllerTest extends AbstractTest {
         final UserModel user2 = model;
         
         assertThrows(ForbiddenException.class,
-            () -> projectController.removeProjectMember(user2, project.getId(), user));
+            () -> projectController.removeProjectMember(user2, project.getId()));
         assertNotNull(user2.getId());
 
-        final ProjectModel updatedProject = projectController.removeProjectMember(user, project.getId(), user2);
+        final ProjectModel updatedProject = projectController.removeProjectMember(user, project.getId());
         assertNotNull(updatedProject);
         assertEquals(1, updatedProject.getMembers().size());
         enties = entityManager

@@ -39,9 +39,10 @@ public class GarageResource implements GarageEndpoint {
     @Override
     public Response createGarage(String projectId, String propertyId, String buildingId, GarageJson garage) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR
+                ProjectMemberModel.UserRole.PROPRIETOR,
+                ProjectMemberModel.UserRole.LESSOR,
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();
@@ -57,11 +58,13 @@ public class GarageResource implements GarageEndpoint {
     public Response getGarages(String projectId, String buildingId) {
         System.out.println("projectId" + projectId + "propertyId " + buildingId);
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
+                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
                 ProjectMemberModel.UserRole.LESSEE,
-                ProjectMemberModel.UserRole.CONSULTANT
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();

@@ -13,12 +13,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import de.remsfal.core.dto.*;
+import de.remsfal.core.model.CustomerModel;
 import de.remsfal.core.model.ProjectMemberModel;
 import de.remsfal.core.model.UserModel;
 import de.remsfal.service.control.AuthController;
 import de.remsfal.service.control.UserController;
-import de.remsfal.service.entity.dto.ProjectMembershipEntity;
 import org.jboss.logging.Logger;
 
 import de.remsfal.core.ProjectEndpoint;
@@ -73,7 +74,14 @@ public class ProjectResource implements ProjectEndpoint {
 
     @Override
     public Response getProject(final String projectId) {
-        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{ProjectMemberModel.UserRole.PROPRIETOR, ProjectMemberModel.UserRole.MANAGER}, authController.getJwt());
+        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
+                ProjectMemberModel.UserRole.PROPRIETOR,
+                ProjectMemberModel.UserRole.MANAGER,
+                ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.LESSEE,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
+        }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -85,12 +93,42 @@ public class ProjectResource implements ProjectEndpoint {
         return Response.ok(ProjectJson.valueOf(model)).build();
     }
 
+    @Override
+    public Response getUserRoleForProject(final String projectId) {
+        boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
+                ProjectMemberModel.UserRole.PROPRIETOR,
+                ProjectMemberModel.UserRole.MANAGER,
+                ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.LESSEE,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
+        }, authController.getJwt());
+        if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
+        if(projectId == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid project ID")
+                    .build();
+        }
+        try{
+            DecodedJWT jwt =  authController.getDecodedJWT(authController.getJwt());
+            CustomerModel user = userController.getUser(jwt.getSubject());
+            ProjectMemberModel.UserRole role = controller.getUserRoleInProject(user, projectId);
+            String roleString = role.toString();
+            System.out.println("roleString " + roleString);
+            return Response.ok(roleString).build();
+        }
+        catch(Exception e){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Bad Request")
+                    .build();
+        }
+    }
+
 
     @Override
     public Response updateProject(final String projectId, @Valid final ProjectJson project) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
-                ProjectMemberModel.UserRole.MANAGER
+                ProjectMemberModel.UserRole.MANAGER,
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
@@ -105,7 +143,6 @@ public class ProjectResource implements ProjectEndpoint {
     @Override
     public Response deleteProject(final String projectId) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
@@ -120,8 +157,8 @@ public class ProjectResource implements ProjectEndpoint {
     @Override
     public Response addProjectMember(final String projectId, final ProjectMemberJson member) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
-                ProjectMemberModel.UserRole.MANAGER
+                ProjectMemberModel.UserRole.MANAGER,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
@@ -144,7 +181,11 @@ catch (Exception e){
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
                 ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.CONSULTANT
+                ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.LESSEE,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
@@ -158,24 +199,30 @@ catch (Exception e){
     }
 
     @Override
-    public Response updateProjectMember(final String projectId, final String memberId, final ProjectJson project) {
+    public Response updateProjectMember(String projectId, ProjectMemberJson member, ProjectJson project){
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
-                ProjectMemberModel.UserRole.MANAGER
+                ProjectMemberModel.UserRole.MANAGER,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
             throw new BadRequestException("Invalid project ID");
         }
-        // TODO Auto-generated method stub
-        return null;
+        UserModel user = userController.getUser(member.getId());
+
+        controller.changeProjectMemberRole(user, projectId, member);
+        Set<? extends ProjectMemberModel> members =  controller.getProjectMembers(principal, projectId);
+        if(members.isEmpty()) {
+            throw new NotFoundException("No members for this project fond");
+        }
+        return Response.ok(ProjectMemberListJson.valueOf(members)).build();
     }
 
     @Override
-    public Response deleteProjectMember(final String projectId, final String memberId) {
+    public Response deleteProjectMember(String projectId, String memberId){
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
-                ProjectMemberModel.UserRole.MANAGER
+                ProjectMemberModel.UserRole.MANAGER,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         if(projectId == null || projectId.isBlank()) {
@@ -183,10 +230,14 @@ catch (Exception e){
         }
         UserModel user = userController.getUser(memberId);
 
-        // controller.removeProjectMember()
-        // TODO Auto-generated method stub
-        return Response.status(Response.Status.NO_CONTENT).build();  // successfully deleted
+        controller.removeProjectMember(user, projectId);
+        Set<? extends ProjectMemberModel> members =  controller.getProjectMembers(principal, projectId);
+        if(members.isEmpty()) {
+            throw new NotFoundException("No members for this project fond");
+        }
+        return Response.ok(ProjectMemberListJson.valueOf(members)).build();
 
     }
+
 
 }

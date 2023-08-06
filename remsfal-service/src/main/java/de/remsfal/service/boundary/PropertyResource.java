@@ -39,9 +39,9 @@ public class PropertyResource implements PropertyEndpoint {
     @Override
     public Response createProperty(String projectId, PropertyJson property) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR
+                ProjectMemberModel.UserRole.PROPRIETOR,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         final PropertyModel model = propertyController.createProperty(projectId, principal, property.getTitle());
@@ -54,8 +54,13 @@ public class PropertyResource implements PropertyEndpoint {
     @Override
     public Response getProperties(String projectId) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
+                ProjectMemberModel.UserRole.MANAGER,
                 ProjectMemberModel.UserRole.PROPRIETOR,
-                ProjectMemberModel.UserRole.MANAGER
+                ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
+                ProjectMemberModel.UserRole.LESSEE,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         List<PropertyEntity> properties = propertyController.getProperties(projectId);

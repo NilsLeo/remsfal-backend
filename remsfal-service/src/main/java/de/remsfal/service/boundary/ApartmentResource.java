@@ -42,9 +42,10 @@ public class ApartmentResource implements ApartmentEndpoint {
     @Override
     public Response createApartment(String projectId, String buildingId, ApartmentJson apartment) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR
+                ProjectMemberModel.UserRole.PROPRIETOR,
+                ProjectMemberModel.UserRole.LESSOR,
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();
@@ -59,11 +60,14 @@ public class ApartmentResource implements ApartmentEndpoint {
     public Response getApartments(String projectId, String buildingId) {
         System.out.println("projectId" + projectId + "propertyId " + buildingId);
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
+                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
                 ProjectMemberModel.UserRole.LESSEE,
-                ProjectMemberModel.UserRole.CONSULTANT
+
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();

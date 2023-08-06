@@ -36,9 +36,9 @@ public class SiteResource implements SiteEndpoint {
     @Override
     public Response createSite(String projectId, String propertyId, SiteJson site) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR
+                ProjectMemberModel.UserRole.PROPRIETOR,
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();
@@ -53,11 +53,12 @@ public class SiteResource implements SiteEndpoint {
     public Response getSites(String projectId, String propertyId) {
         System.out.println("projectId" + projectId + "propertyId " + propertyId);
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR,
-                ProjectMemberModel.UserRole.LESSEE,
-                ProjectMemberModel.UserRole.CONSULTANT
+                ProjectMemberModel.UserRole.PROPRIETOR,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER
+
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();

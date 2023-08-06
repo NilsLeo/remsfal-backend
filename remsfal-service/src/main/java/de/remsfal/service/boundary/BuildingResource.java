@@ -37,9 +37,9 @@ public class BuildingResource implements BuildingEndpoint {
     @Override
     public Response createBuilding(String projectId, String propertyId, BuildingJson building) {
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
-                ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.PROPRIETOR,
+
         }, authController.getJwt());
         if(!isAuthorized) { return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build(); }
         final BuildingModel model = buildingController.createBuilding(propertyId, building.getTitle());
@@ -54,11 +54,13 @@ public class BuildingResource implements BuildingEndpoint {
         System.out.println("propertyIdB" + propertyId);
 
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
-                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.MANAGER,
+                ProjectMemberModel.UserRole.PROPRIETOR,
                 ProjectMemberModel.UserRole.LESSOR,
+                ProjectMemberModel.UserRole.CONSULTANT,
+                ProjectMemberModel.UserRole.CARETAKER,
                 ProjectMemberModel.UserRole.LESSEE,
-                ProjectMemberModel.UserRole.CONSULTANT
+
         }, authController.getJwt());
         if (!isAuthorized) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have the rights to access this resource.").build();

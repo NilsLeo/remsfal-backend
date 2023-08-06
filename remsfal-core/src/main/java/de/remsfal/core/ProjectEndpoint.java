@@ -53,6 +53,12 @@ public interface ProjectEndpoint {
     @APIResponse(responseCode = "404", description = "The project does not exist")
     Response getProject(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId);
+    @GET
+    @Path("/{projectId}/role")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieve information of a project.")
+    @APIResponse(responseCode = "404", description = "The project does not exist")
+    Response getUserRoleForProject(@Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId);
 
     @PATCH
     @Path("/{projectId}")
@@ -97,7 +103,7 @@ public interface ProjectEndpoint {
     @APIResponse(responseCode = "404", description = "The project or the member does not exist")
     Response updateProjectMember(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
-        @Parameter(description = "ID of the member", required = true) @PathParam("memberId") String memberId,
+        @Parameter(description = "Project member information", required = true) @Valid ProjectMemberJson member,
         @Parameter(description = "Project information", required = true) @Valid ProjectJson project);
 
     @DELETE
@@ -107,6 +113,6 @@ public interface ProjectEndpoint {
     @APIResponse(responseCode = "404", description = "The project or the member does not exist")
     Response deleteProjectMember(
         @Parameter(description = "ID of the project", required = true) @PathParam("projectId") String projectId,
-        @Parameter(description = "ID of the member", required = true) @PathParam("memberId") String memberId);
+        @Parameter(description = "ID of the Member", required = true) @PathParam("memberId") String memberId);
 
 }
