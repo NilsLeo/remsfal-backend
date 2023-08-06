@@ -20,7 +20,6 @@ public class ProjectRepository extends AbstractRepository<ProjectEntity> {
     }
 
     public ProjectMembershipEntity findMembershipByUserIdAndProjectId(final String userId, final String projectId) {
-        System.out.println("reachedpm");
         ProjectMembershipEntity entity = getEntityManager()
                 .createNamedQuery("ProjectMembershipEntity.findByProjectIdAndUserId", ProjectMembershipEntity.class)
                 .setParameter(PARAM_PROJECT_ID, projectId)

@@ -114,7 +114,6 @@ public class ProjectResource implements ProjectEndpoint {
             CustomerModel user = userController.getUser(jwt.getSubject());
             ProjectMemberModel.UserRole role = controller.getUserRoleInProject(user, projectId);
             String roleString = role.toString();
-            System.out.println("roleString " + roleString);
             return Response.ok(roleString).build();
         }
         catch(Exception e){

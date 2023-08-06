@@ -152,7 +152,6 @@ public class ProjectController {
         logger.infov("Removing a project membership (user={0}, project={1})", user.getId(), projectId);
         try {
             projectRepository.removeMembershipByUserIdAndProjectId(user.getId(), projectId);
-            System.out.println("reacheddelete");
                 return projectRepository.findById(projectId);
         } catch (final NoResultException e) {
             throw new NotFoundException("Project not exist or user has no membership", e);
@@ -176,8 +175,6 @@ public class ProjectController {
         List<ProjectMembershipEntity> memberships = projectRepository.findMembershipByUserId(user.getId());
         for (ProjectMembershipEntity m: memberships
              ) {
-            System.out.println("testp project " + m.getProject().getId() + " " + projectId + " role " + m.getRole());
-
             if(m.getProject().getId().equals(projectId)){
                 return m.getRole();
             }

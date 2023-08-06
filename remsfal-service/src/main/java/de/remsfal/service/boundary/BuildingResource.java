@@ -51,7 +51,6 @@ public class BuildingResource implements BuildingEndpoint {
 
     @Override
     public Response getBuildings(String projectId, String propertyId) {
-        System.out.println("propertyIdB" + propertyId);
 
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
                 ProjectMemberModel.UserRole.MANAGER,

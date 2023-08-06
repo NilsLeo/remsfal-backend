@@ -63,12 +63,6 @@ public class AuthController {
 
         List<ProjectMembershipEntity>  projectMembershipEntities = projectRepository.findMembershipByUserId(user.getId());
         for (ProjectMembershipEntity entity : projectMembershipEntities) {
-            System.out.println("ID: " + entity.getId());
-            System.out.println("Project: " + entity.getProject());
-            System.out.println("User: " + entity.getUser());
-            System.out.println("Role: " + entity.getRole());
-            System.out.println("Email: " + entity.getEmail());
-            System.out.println("-----------");
 
             switch(entity.getRole().toString()){
                 case "PROPRIETOR":
@@ -123,7 +117,6 @@ public class AuthController {
         if (jwt != null) {
             for (ProjectMemberModel.UserRole userRole : authorizedUserRoles) {
                 String claimString = userRole.toString().toLowerCase() + "Projects";
-                System.out.println("claim " + claimString);
                 Claim claim = jwt.getClaim(claimString);
                 if (claim != null) {
                     Gson gson = new Gson();

@@ -56,7 +56,6 @@ public class GarageResource implements GarageEndpoint {
 
     @Override
     public Response getGarages(String projectId, String buildingId) {
-        System.out.println("projectId" + projectId + "propertyId " + buildingId);
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
                 ProjectMemberModel.UserRole.MANAGER,
                 ProjectMemberModel.UserRole.PROPRIETOR,

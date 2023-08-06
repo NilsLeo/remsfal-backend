@@ -51,7 +51,6 @@ public class SiteResource implements SiteEndpoint {
     }
     @Override
     public Response getSites(String projectId, String propertyId) {
-        System.out.println("projectId" + projectId + "propertyId " + propertyId);
         boolean isAuthorized = authController.isOneOfGivenRolesInProject(projectId, new ProjectMemberModel.UserRole[]{
                 ProjectMemberModel.UserRole.MANAGER,
                 ProjectMemberModel.UserRole.PROPRIETOR,

@@ -13,7 +13,6 @@ import java.util.List;
 @ApplicationScoped
 public class BuildingRepository extends AbstractRepository<BuildingEntity> {
     public List<BuildingEntity> findBuildingsByPropertyId(String propertyId) {
-        System.out.println("propertyId" + propertyId);
 
         return getEntityManager()
                 .createNamedQuery("BuildingEntity.findByPropertyId", BuildingEntity.class)

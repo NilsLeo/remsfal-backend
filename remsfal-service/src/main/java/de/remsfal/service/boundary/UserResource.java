@@ -48,7 +48,6 @@ public class UserResource implements UserEndpoint {
             CustomerModel user = controller.getUser(jwt.getSubject());
             return UserJson.valueOf(user);
         } catch (NoResultException e) {
-            System.out.println("emailll" + jwt.getClaim("email").asString());
             final UserModel userModel = ImmutableUserJson.builder()
                     .id(jwt.getSubject())
                     .email(jwt.getClaim("email").asString())
@@ -73,7 +72,6 @@ public class UserResource implements UserEndpoint {
 
     @Override
     public void deleteUser(final String userId) {
-        System.out.println("userId " + userId);
         CustomerModel user = controller.getUserByTokenId(userId);
         if (!controller.deleteUser(user.getId())) {
             throw new NotFoundException();

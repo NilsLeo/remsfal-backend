@@ -14,7 +14,6 @@ import java.util.List;
 public class SiteRepository extends AbstractRepository<SiteEntity> {
 
     public List<SiteEntity> findSitesByPropertyId(String propertyId) {
-        System.out.println("propertyId" + propertyId);
 
         return getEntityManager()
                 .createNamedQuery("SiteEntity.findByPropertyId", SiteEntity.class)
